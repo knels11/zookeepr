@@ -39,7 +39,7 @@ function filterByQuery(query, animalsArray) {
 
 //route
 //the function will take req.query as an arg and filter through animals accordingly
-app.get('/api/animals', (req,res) => {
+app.get('/api/animals.json', (req,res) => {
     let results = animals;
     if(req.query){
         results = filterByQuery(req.query, results);
