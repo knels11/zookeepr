@@ -2,16 +2,16 @@ const express = require('express');
 const PORT = process.env.PORT || 3001;
 const app = express();
 //require data
-const {  animals  } = require('./data/animals.json');
+const { animals } = require('./data/animals.json');
 //handles diff queries by extracting data
 function filterByQuery(query, animalsArray) {
     let personalityTraitsArray = [];
     //save animalsArray as filteredResults
     let filteredResults = animalsArray;
     //save personalityTraits as an array
-    if (query.personalityTraits){
+    if (query.personalityTraits) {
         //if personality traits is a string place into a new array and save
-        if (typeof query.personalityTraits === 'string'){
+        if (typeof query.personalityTraits === 'string') {
             personalityTraitsArray = [query.personalityTraits];
         } else {
             personalityTraitsArray = query.personalityTraits;
@@ -21,7 +21,7 @@ function filterByQuery(query, animalsArray) {
             //for each trait being targeted by the filter the filteredResults
             filteredResults = filteredResults.filter(
                 animal => animal.personalityTraits.indexOf(trait) !== -1
-            ); 
+            );
         });
     }
     if (query.diet) {
@@ -36,16 +36,32 @@ function filterByQuery(query, animalsArray) {
     return filteredResults;
 }
 
+//takes in the id and array of animals & returns a single animal object
+function findById(id, animalsArray) {
+    const result = animalsArray.filter(animal => animal.id === id)[0];
+    return result;
+}
 
 //route
 //the function will take req.query as an arg and filter through animals accordingly
-app.get('/api/animals.json', (req,res) => {
+app.get('/api/animals', (req, res) => {
     let results = animals;
-    if(req.query){
+    if (req.query) {
         results = filterByQuery(req.query, results);
     }
     res.json(results);
 });
+//if no record of the animal being searched exists, client receives 404 error
+//param routes must come after GET route
+app.get('/api/animals/:id', (req, res) => {
+    const result = findById(req.params.id, animals);
+    if (result) {
+        res.json(result);
+    } else {
+        res.send(404);
+    }
+});
+
 
 app.listen(PORT, () => {
     console.log(`API server now on port ${PORT}!`);
