@@ -1,6 +1,12 @@
+const fs = require ('fs');
+const path = require('path');
 const express = require('express');
 const PORT = process.env.PORT || 3001;
 const app = express();
+//parse incoming string or array data
+app.use(express.urlencoded({  extended: true  }));
+//parse incoming JSON data
+app.use(express.json());
 //require data
 const { animals } = require('./data/animals.json');
 //handles diff queries by extracting data
@@ -51,6 +57,31 @@ app.get('/api/animals', (req, res) => {
     }
     res.json(results);
 });
+//accepts POST routes req.body value and array we want to add data to
+function createNewAnimal(body, animalsArray) {
+    const animal = body;
+    animalsArray.push(animal);
+    fs.writeFileSync(
+        path.join(__dirname, './data/animals.json'),
+        JSON.stringify({  animals:  animalsArray  }, null, 2)
+    );
+    console.log(body);
+    //return finished code to post route for response
+    return animal;
+}
+//validation func. takes new animal data from req.body and checks if each key exists and has right data
+function validateAnimal(animal) {
+    if (!animal.name || typeof animal.name !== 'string'){
+        return false;
+    }
+    if (!animal.species || typeof animal.diet !== 'string'){
+        return false;
+    }
+    if (!animal.personalityTraits || !Array.isArray(animal.personalityTraits)){
+        return false;
+    }
+    return true;
+}
 //if no record of the animal being searched exists, client receives 404 error
 //param routes must come after GET route
 app.get('/api/animals/:id', (req, res) => {
@@ -63,9 +94,19 @@ app.get('/api/animals/:id', (req, res) => {
 });
 
 app.post('/api/animals', (req, res) => {
+    //set id 1 greater than the current highest id value
+    req.body.id = animals.length.toString();
+    //if any data in req.body is incorrect send 400 error back
+    if (!validateAnimal(req.body)) {
+        res.status(400).send('The animal is not properly formatted.')
+    } else {
+    //add animal to json file and animals array in this function
+    const animal = createNewAnimal(req.body, animals);
+
     //req.body, where incoming content will be
     console.log(req.body);
-    res.json(req.body);
+    res.json(animal);
+    }    
 });
 
 
