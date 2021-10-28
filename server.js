@@ -108,7 +108,10 @@ app.post('/api/animals', (req, res) => {
     res.json(animal);
     }    
 });
-
+//route to respond with an html pg to display in the browser
+app.get('/', (req,res) => {
+    res.sendFile(path.join(__dirname, './public/zookeeper-public/index.html'));
+});
 
 app.listen(PORT, () => {
     console.log(`API server now on port ${PORT}!`);
