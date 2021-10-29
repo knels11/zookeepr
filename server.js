@@ -3,10 +3,14 @@ const path = require('path');
 const express = require('express');
 const PORT = process.env.PORT || 3001;
 const app = express();
+//middleware
 //parse incoming string or array data
 app.use(express.urlencoded({  extended: true  }));
 //parse incoming JSON data
 app.use(express.json());
+//middleware that instructs server to make certain files available
+app.use(express.static('zookeepr-public'));
+
 //require data
 const { animals } = require('./data/animals.json');
 //handles diff queries by extracting data
@@ -110,7 +114,7 @@ app.post('/api/animals', (req, res) => {
 });
 //route to respond with an html pg to display in the browser
 app.get('/', (req,res) => {
-    res.sendFile(path.join(__dirname, './public/zookeeper-public/index.html'));
+    res.sendFile(path.join(__dirname, './public/zookeepr-public/index.html'));
 });
 
 app.listen(PORT, () => {
