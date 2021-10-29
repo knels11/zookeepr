@@ -113,8 +113,13 @@ app.post('/api/animals', (req, res) => {
     }    
 });
 //route to respond with an html pg to display in the browser
+//route that serves the index.html page
 app.get('/', (req,res) => {
-    res.sendFile(path.join(__dirname, './public/zookeepr-public/index.html'));
+    res.sendFile(path.join(__dirname, './public/index.html'));
+});
+//this route takes us to /animals
+app.get('/animals', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/animals.html'))
 });
 
 app.listen(PORT, () => {
