@@ -48,6 +48,7 @@ const handleGetZookeepersSubmit = event => {
   const zookeeperObject = { name, age };
   getZookeepers(zookeeperObject);
 };
+//added ability to search for zk by name or age
 //add a submit event listener on zookeeper form
 $zookeeperForm.addEventListener('submit', handleGetZookeepersSubmit);
 
