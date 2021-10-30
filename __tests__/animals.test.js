@@ -3,10 +3,11 @@ const {
     filterByQuery,
     findById,
     createNewAnimal,
-    calidateAnimal,
+    validateAnimal,
 } = require("../lib/animals");
 const { animals } = require('../data/animals.json');
-const { hasUncaughtExceptionCaptureCallback } = require('process');
+
+jest.mock('fs');
 
 test('creates an animal object', () => {
     const animal = createNewAnimal(
